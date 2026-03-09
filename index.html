@@ -1,661 +1,253 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACE 선정 및 전사 AI 확산 로드맵</title>
-    
-    <!-- 폰트: Pretendard -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: '#002C5F',
-                        'navy-light': '#003b80',
-                        bglight: '#F8F9FA',
-                    },
-                    fontFamily: {
-                        sans: ['Pretendard', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-        body {
-            background-color: #F8F9FA;
-            font-family: 'Pretendard', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-
-        /* 카드 호버 애니메이션 */
-        .dashboard-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .dashboard-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 44, 95, 0.1), 0 10px 10px -5px rgba(0, 44, 95, 0.04);
-            border-color: #002C5F;
-        }
-
-        /* 모달 애니메이션 */
-        .modal {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            transform: scale(0.95) translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-
-        /* 스크롤바 디자인 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACE 활동 연간 로드맵</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#009CE4',
+                        primaryLight: '#E5F6FF',
+                        titleDark: '#1a345a',
+                        bgBase: '#f0f7fc',
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body { font-family: 'Noto Sans KR', 'Pretendard', sans-serif; }
+        .card-shadow { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03); }
+        .badge-border { border: 1.5px solid #e2e8f0; }
+</style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="min-h-screen bg-gradient-to-br from-[#e6f2fc] via-[#f0f8ff] to-[#e0f0fb] text-gray-800 relative overflow-x-hidden">
 
-    <!-- Header Section -->
-    <header class="bg-navy text-white pt-16 pb-20 px-6 shadow-md relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mt-16 -mr-16 text-white opacity-5">
-            <i data-lucide="cpu" class="w-96 h-96"></i>
-        </div>
-        <div class="max-w-6xl mx-auto relative z-10 text-center">
-            <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-sm font-semibold tracking-wider mb-4 border border-white/30 backdrop-blur-sm">
-                경영진 요약 대시보드
-            </span>
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
-                ACE 선정 및 전사 AI 확산 로드맵
-            </h1>
-            <p class="text-lg md:text-xl text-blue-100 font-medium max-w-2xl mx-auto">
-                핵심 거점 조직을 통한 전사 AI 내재화 및 맞춤형 Use-Case 발굴 전략
-            </p>
-        </div>
-    </header>
 
-    <!-- Main Content: Cards Grid -->
-    <main class="flex-grow max-w-6xl mx-auto px-6 -mt-10 relative z-20 pb-20 w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Card 0 (신규): ACE 선정 결과 -->
-            <button onclick="openModal('modal_ace')" class="dashboard-card bg-white rounded-2xl shadow-lg p-8 text-left border-t-4 border-transparent flex flex-col items-center justify-center text-center group cursor-pointer focus:outline-none focus:ring-4 focus:ring-navy/20">
-                <div class="w-16 h-16 bg-blue-50 text-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-navy group-hover:text-white transition-colors">
-                    <i data-lucide="award" class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">전사 ACE 선정 결과</h2>
-                <p class="text-gray-500 mb-6 font-medium">총 지원자 73명 중 12개 본부별 핵심 앰배서더 30명 최종 선발 완료</p>
-                <div class="mt-auto text-navy font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                    상세 현황 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </button>
 
-            <!-- Card 1 -->
-            <button onclick="openModal('modal1')" class="dashboard-card bg-white rounded-2xl shadow-lg p-8 text-left border-t-4 border-transparent flex flex-col items-center justify-center text-center group cursor-pointer focus:outline-none focus:ring-4 focus:ring-navy/20">
-                <div class="w-16 h-16 bg-blue-50 text-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-navy group-hover:text-white transition-colors">
-                    <i data-lucide="network" class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">확산 거점 조직도</h2>
-                <p class="text-gray-500 mb-6 font-medium">1차 ACE부터 2차 AI 링커를 거쳐 단위조직까지 이어지는 유기적 전파 체계</p>
-                <div class="mt-auto text-navy font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                    상세 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </button>
+    <!-- 배경 장식 효과 -->
+<div class="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-blue-300 rounded-full mix-blend-multiply blur-[100px] opacity-40 pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-sky-200 rounded-full mix-blend-multiply blur-[120px] opacity-40 pointer-events-none"></div>
 
-            <!-- Card 2 -->
-            <button onclick="openModal('modal2')" class="dashboard-card bg-white rounded-2xl shadow-lg p-8 text-left border-t-4 border-transparent flex flex-col items-center justify-center text-center group cursor-pointer focus:outline-none focus:ring-4 focus:ring-navy/20">
-                <div class="w-16 h-16 bg-blue-50 text-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-navy group-hover:text-white transition-colors">
-                    <i data-lucide="monitor-play" class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">PlayGround & Use-Case</h2>
-                <p class="text-gray-500 mb-6 font-medium">전사 통합 커뮤니티 운영 및 업무/일상 투트랙(Two-Track) AI 활용 전략</p>
-                <div class="mt-auto text-navy font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                    상세 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </button>
 
-            <!-- Card 3 -->
-            <button onclick="openModal('modal3')" class="dashboard-card bg-white rounded-2xl shadow-lg p-8 text-left border-t-4 border-transparent flex flex-col items-center justify-center text-center group cursor-pointer focus:outline-none focus:ring-4 focus:ring-navy/20">
-                <div class="w-16 h-16 bg-blue-50 text-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-navy group-hover:text-white transition-colors">
-                    <i data-lucide="calendar-days" class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">2026 연간 로드맵</h2>
-                <p class="text-gray-500 mb-6 font-medium">기반 조성부터 맞춤형 Agent 빌드업까지 4단계(Phase) 연간 추진 계획</p>
-                <div class="mt-auto text-navy font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                    상세 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </button>
 
-        </div>
-    </main>
+    <!-- ★ 로고 이미지 + AI Design Lab 텍스트 ★ -->
+<div class="absolute top-2 left-8 md:top-3 md:left-12 z-[100] flex items-center">
+<img
+            src="logo.png"
+            alt="Logo"
+            class="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-sm"
+        />
+<span class="text-2xl md:text-3xl font-medium text-[#2d3748] tracking-tight -ml-14">
+            AI Design Lab
+</span>
+</div>
 
-    <!-- ============================================== -->
-    <!-- Modals Section -->
-    <!-- ============================================== -->
 
-    <!-- Modal 0: ACE 선정 결과 (실제 데이터 반영) -->
-    <div id="modal_ace" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('modal_ace')"></div>
-        <div class="modal-content relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="bg-navy px-6 py-4 flex items-center justify-between text-white">
-                <h3 class="text-xl font-bold flex items-center gap-2"><i data-lucide="award" class="w-5 h-5"></i> 1차 거점 전사 ACE 선정 결과 현황</h3>
-                <button onclick="closeModal('modal_ace')" class="text-blue-200 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto bg-gray-50">
-                
-                <!-- Summary Metrics -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-white rounded-xl p-4 text-center border border-gray-200 shadow-sm">
-                        <div class="text-sm text-gray-500 font-bold mb-1">총 지원자</div>
-                        <div class="text-3xl font-extrabold text-navy">73<span class="text-lg font-bold text-gray-600">명</span></div>
-                    </div>
-                    <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-200 shadow-sm">
-                        <div class="text-sm text-blue-700 font-bold mb-1">최종 선발</div>
-                        <div class="text-3xl font-extrabold text-blue-600">30<span class="text-lg font-bold text-blue-400">명</span></div>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 text-center border border-gray-200 shadow-sm">
-                        <div class="text-sm text-gray-500 font-bold mb-1">평균 경쟁률</div>
-                        <div class="text-3xl font-extrabold text-gray-800">2.4 : 1</div>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 text-center border border-gray-200 shadow-sm">
-                        <div class="text-sm text-gray-500 font-bold mb-1">참여 본부</div>
-                        <div class="text-3xl font-extrabold text-gray-800">12<span class="text-lg font-bold text-gray-600">개</span></div>
-                    </div>
-                </div>
 
-                <!-- Detail Distribution -->
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-bold text-navy flex items-center gap-2 mb-4">
-                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i> 선발 인원 주요 특징 및 세부 현황
-                        </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            
-                            <!-- 1. 직급 분포 (수정: 연령대 삭제, 매니저/책임매니저 구분) -->
-                            <div class="border border-gray-200 bg-white rounded-lg p-5 shadow-sm">
-                                <h5 class="font-bold text-gray-700 text-sm mb-4">최종 선발 인원 직급별 분포</h5>
-                                <div class="space-y-5 mt-2">
-                                    <div>
-                                        <div class="flex justify-between text-sm mb-1.5">
-                                            <span class="font-semibold text-gray-800">매니저</span> 
-                                            <span class="text-navy font-bold">13명 <span class="text-gray-500 font-normal text-xs">(43%)</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5">
-                                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 43%"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-sm mb-1.5">
-                                            <span class="font-semibold text-gray-800">책임매니저</span> 
-                                            <span class="text-navy font-bold">17명 <span class="text-gray-500 font-normal text-xs">(57%)</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5">
-                                            <div class="bg-navy h-2.5 rounded-full" style="width: 57%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-5 p-3 bg-gray-50 rounded text-xs text-gray-500 border border-gray-100 text-center">
-                                    * 최종 선발 인원(30명) 기준 직급 비중
-                                </div>
-                            </div>
+    <!-- 메인 콘텐츠 -->
+<div class="max-w-5xl mx-auto p-4 md:p-8 pt-4 md:pt-12 z-10 relative">
+<!-- Header -->
+<header class="mb-20 text-center mt-40 md:mt-44">
+<h1 class="text-[2.6rem] md:text-[3.5rem] font-black text-[#1a2744] mb-5 tracking-tight leading-tight">
+                ACE 활동 연간 로드맵
+</h1>
+<p class="text-[#6b8299] text-[15px] md:text-[17px] font-medium tracking-tight">
+                ACE 멤버만이 누릴 수 있는 특별한 혜택
+</p>
+</header>
 
-                            <!-- 2. 본부별 균형 선발 (기존 구성 복구) -->
-                            <div class="border border-gray-200 bg-white rounded-lg p-5 shadow-sm">
-                                <h5 class="font-bold text-gray-700 text-sm mb-4">본부별 균형 선발 현황</h5>
-                                <ul class="space-y-2 text-sm text-gray-600">
-                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i> 현업 중심의 실무 역량/적용성 높은 인원 우선 배정</li>
-                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i> 본부별 규모(현장, 지사 등)에 따른 균등 안배(본부별 1~4명)</li>
-                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i> 평가 과제(시각화/변화관리)의 실무 적용성 및 창의성을 종합적으로 고려하여 최종 선발</li>
-                                </ul>
-                                <div class="mt-4 p-3 bg-gray-50 rounded text-xs text-gray-500 border border-gray-100">
-                                    * 세부 명단 및 부서별 배치 현황은 첨부 엑셀 데이터 참조
-                                </div>
-                            </div>
 
-                            <!-- 3. 근무지별 지원 및 선발 현황 -->
-                            <div class="border border-gray-200 bg-white rounded-lg p-5 shadow-sm flex flex-col justify-center">
-                                <h5 class="font-bold text-gray-800 text-sm mb-5 flex items-center justify-between">
-                                    <span>근무지별 지원 및 선발 현황</span>
-                                    <span class="text-xs font-normal text-gray-400 ml-auto">(선발 / 지원)</span>
-                                </h5>
-                                <div class="space-y-6">
-                                    <div>
-                                        <div class="flex justify-between text-sm mb-1.5">
-                                            <span class="font-bold text-navy">본사</span> 
-                                            <span class="text-navy font-extrabold">28 <span class="text-gray-400 font-normal">/ 59</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5 flex overflow-hidden">
-                                            <div class="bg-navy h-full" style="width: 47.5%" title="선발"></div>
-                                            <div class="bg-blue-200 h-full" style="width: 52.5%" title="미선발"></div>
-                                        </div>
-                                        <div class="text-[11px] text-gray-400 mt-1.5 text-right font-medium">선발률 47.5%</div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-sm mb-1.5">
-                                            <span class="font-bold text-blue-600">현장</span> 
-                                            <span class="text-blue-600 font-extrabold">2 <span class="text-gray-400 font-normal">/ 14</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5 flex overflow-hidden">
-                                            <div class="bg-blue-500 h-full" style="width: 14.3%" title="선발"></div>
-                                            <div class="bg-blue-200 h-full" style="width: 85.7%" title="미선발"></div>
-                                        </div>
-                                        <div class="text-[11px] text-gray-400 mt-1.5 text-right font-medium">선발률 14.3%</div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- 4. 본부별 선정 현황 (유지) -->
-                            <div class="border border-gray-200 bg-white rounded-lg p-5 shadow-sm flex flex-col">
-                                <h5 class="font-bold text-gray-800 text-sm mb-4 flex items-center justify-between">
-                                    <span>본부별 지원 및 선발 상세</span>
-                                    <span class="text-xs font-normal text-gray-400 ml-auto">(선발 / 지원)</span>
-                                </h5>
-                                
-                                <div class="overflow-y-auto pr-2 h-28 space-y-3">
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">건축주택사업본부</span> 
-                                            <span class="text-navy font-bold">4 <span class="text-gray-400 font-normal">/ 22</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-1.5 flex overflow-hidden">
-                                            <div class="bg-navy h-full" style="width: 18%"></div><div class="bg-blue-200 h-full" style="width: 82%"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">플랜트사업본부</span> 
-                                            <span class="text-navy font-bold">3 <span class="text-gray-400 font-normal">/ 11</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-1.5 flex overflow-hidden">
-                                            <div class="bg-navy h-full" style="width: 27%"></div><div class="bg-blue-200 h-full" style="width: 73%"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">글로벌사업부</span> 
-                                            <span class="text-navy font-bold">3 <span class="text-gray-400 font-normal">/ 6</span></span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-1.5 flex overflow-hidden">
-                                            <div class="bg-navy h-full" style="width: 50%"></div><div class="bg-blue-200 h-full" style="width: 50%"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">안전품질 / NE / 재경</span> 
-                                            <span class="text-navy font-bold">각 3명 선정 <span class="text-gray-400 font-normal">/ 각 5명 지원</span></span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">토목사업본부</span> 
-                                            <span class="text-navy font-bold">2명 선정 <span class="text-gray-400 font-normal">/ 4명 지원</span></span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">경영지원본부</span> 
-                                            <span class="text-navy font-bold">2명 선정 <span class="text-gray-400 font-normal">/ 5명 지원</span></span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">개발 / 연구원 / PI</span> 
-                                            <span class="text-navy font-bold">각 2명 선정 <span class="text-gray-400 font-normal">/ 각 3명 지원</span></span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between text-xs mb-1">
-                                            <span class="font-semibold text-gray-700">전략기획사업부</span> 
-                                            <span class="text-navy font-bold">1명 선정 <span class="text-gray-400 font-normal">/ 1명 지원</span></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
+        <!-- Desktop Timeline (Horizontal) -->
+<div class="hidden lg:block relative mb-20 px-8">
+<div class="absolute left-12 right-12 top-7 h-[4px] bg-white shadow-[0_2px_10px_rgba(0,156,228,0.12)] rounded-full -translate-y-1/2 z-0"></div>
+<div id="desktop-timeline" class="relative flex justify-between items-start h-36 z-10"></div>
+</div>
 
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal 1: 조직도 -->
-    <div id="modal1" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('modal1')"></div>
-        <div class="modal-content relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="bg-navy px-6 py-4 flex items-center justify-between text-white">
-                <h3 class="text-xl font-bold flex items-center gap-2"><i data-lucide="network" class="w-5 h-5"></i> 확산 거점 조직도</h3>
-                <button onclick="closeModal('modal1')" class="text-blue-200 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto">
-                
-                <!-- Flow Diagram -->
-                <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-8">
-                    <h4 class="text-sm font-bold text-gray-500 mb-4 text-center">AI 확산 거점 Flow</h4>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6">
-                        <div class="bg-white border-2 border-navy rounded-lg py-3 px-6 text-center shadow-sm w-full md:w-auto relative">
-                            <div class="text-xs text-navy font-bold mb-1">1차 거점</div>
-                            <div class="font-extrabold text-lg text-gray-800">ACE</div>
-                        </div>
-                        <i data-lucide="arrow-right" class="hidden md:block text-navy/40 w-8 h-8"></i>
-                        <i data-lucide="arrow-down" class="block md:hidden text-navy/40 w-6 h-6"></i>
-                        
-                        <div class="bg-navy text-white rounded-lg py-3 px-6 text-center shadow-md w-full md:w-auto relative transform scale-105">
-                            <div class="text-xs text-blue-200 font-bold mb-1">2차 거점</div>
-                            <div class="font-extrabold text-lg">AI 링커 (Linker)</div>
-                        </div>
-                        <i data-lucide="arrow-right" class="hidden md:block text-navy/40 w-8 h-8"></i>
-                        <i data-lucide="arrow-down" class="block md:hidden text-navy/40 w-6 h-6"></i>
-                        
-                        <div class="bg-white border border-gray-300 rounded-lg py-3 px-6 text-center shadow-sm w-full md:w-auto">
-                            <div class="text-xs text-gray-500 font-bold mb-1">최종 타겟</div>
-                            <div class="font-bold text-lg text-gray-700">365개 단위조직</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Details List -->
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-bold text-navy flex items-center gap-2 border-b pb-2 mb-3">
-                            <i data-lucide="users" class="w-5 h-5"></i> 1차 거점 (AI 핵심 Facilitator)
-                        </h4>
-                        <p class="text-gray-700 bg-blue-50/50 p-4 rounded-lg border border-blue-100 font-medium">
-                            <strong class="text-navy">AI디자인랩 + ACE 30명</strong> (12개 본부별 핵심 앰배서더)
-                        </p>
-                    </div>
+        <!-- Detailed Info Section (Desktop Card) -->
+<div id="detail-section" class="hidden lg:block mb-16 transition-all duration-500"></div>
 
-                    <div>
-                        <h4 class="text-lg font-bold text-navy flex items-center gap-2 border-b pb-2 mb-3">
-                            <i data-lucide="user-check" class="w-5 h-5"></i> 2차 거점 (단위 조직 전파자)
-                        </h4>
-                        <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                            <p class="text-gray-800 text-lg font-bold mb-4">
-                                <span class="bg-navy text-white px-2 py-1 rounded text-sm mr-2">총 365명</span> 
-                                AI 링커 (Linker)
-                                <span class="text-sm font-normal text-gray-500 ml-2">(본사 팀 185개, 현장 180개 단위조직별 각 1명)</span>
-                            </p>
-                            
-                            <ul class="space-y-3 text-gray-700 mb-6">
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 shrink-0 mt-0.5"></i>
-                                    <span><strong>선정 방식:</strong> 본부별 ACE 주도하에 현업 기준에 맞춰 자체 발탁</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="gift" class="w-5 h-5 text-pink-500 shrink-0 mt-0.5"></i>
-                                    <span><strong>핵심 베네핏:</strong> M365 Copilot 유료 계정 우선 부여 <span class="text-gray-500 font-normal">(IT지원실 협의中)</span></span>
-                                </li>
-                            </ul>
 
-                            <h5 class="font-bold text-gray-800 mb-3 bg-white inline-block px-3 py-1 rounded border shadow-sm">AI 링커 주요 활동</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm flex flex-col">
-                                    <div class="w-8 h-8 bg-blue-100 text-navy rounded-full flex items-center justify-center font-bold mb-2">1</div>
-                                    <h6 class="font-bold text-sm mb-1">부서 단위 밀착 전파</h6>
-                                    <p class="text-xs text-gray-600">부서 정기회의에서 유스케이스 '라이브 시연' 및 자발적 도입 유도</p>
-                                </div>
-                                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm flex flex-col">
-                                    <div class="w-8 h-8 bg-blue-100 text-navy rounded-full flex items-center justify-center font-bold mb-2">2</div>
-                                    <h6 class="font-bold text-sm mb-1">맞춤형 문제 해결</h6>
-                                    <p class="text-xs text-gray-600">Copilot Studio 활용 부서 맞춤형 App/Agent 자체 제작</p>
-                                </div>
-                                <div class="bg-white p-4 rounded border border-gray-200 shadow-sm flex flex-col">
-                                    <div class="w-8 h-8 bg-blue-100 text-navy rounded-full flex items-center justify-center font-bold mb-2">3</div>
-                                    <h6 class="font-bold text-sm mb-1">정기 웨비나 소통</h6>
-                                    <p class="text-xs text-gray-600">본부별 ACE와 AI 링커 간 양방향 소통 채널 운영 (AI디자인랩 동석 지원)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal 2: PlayGround & Use-Case -->
-    <div id="modal2" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('modal2')"></div>
-        <div class="modal-content relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="bg-navy px-6 py-4 flex items-center justify-between text-white">
-                <h3 class="text-xl font-bold flex items-center gap-2"><i data-lucide="monitor-play" class="w-5 h-5"></i> PlayGround 및 Use-Case 전략</h3>
-                <button onclick="closeModal('modal2')" class="text-blue-200 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto">
-                
-                <!-- Platform Role -->
-                <div class="mb-8">
-                    <h4 class="text-lg font-bold text-navy flex items-center gap-2 mb-3">
-                        <i data-lucide="globe" class="w-5 h-5"></i> 전사 통합 커뮤니티 『PlayGround』
-                    </h4>
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 flex items-start gap-4">
-                        <div class="bg-blue-100 p-3 rounded-lg text-navy shrink-0">
-                            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-gray-800 text-lg mb-1">단일 웹 플랫폼</p>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-3">전 임직원 상시 접속, 놀이처럼 AI 활동을 자유롭게 공유하고, 실무 적용 아이디어를 얻을 수 있는 통합 허브</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="bg-white border border-gray-300 px-3 py-1 rounded-full text-xs font-semibold text-gray-700">🎉 Play Day</span>
-                                <span class="bg-white border border-gray-300 px-3 py-1 rounded-full text-xs font-semibold text-gray-700">💬 ACE 커뮤니티</span>
-                                <span class="bg-white border border-gray-300 px-3 py-1 rounded-full text-xs font-semibold text-gray-700">📖 Play Book</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Mobile/Tablet Timeline (Vertical) -->
+<div id="mobile-timeline" class="lg:hidden space-y-5 mb-12"></div>
 
-                <!-- Two Track Strategy -->
-                <div>
-                    <h4 class="text-lg font-bold text-navy flex items-center gap-2 mb-4">
-                        <i data-lucide="split" class="w-5 h-5"></i> Use-Case 발굴 투트랙(Two-Track) 전략
-                    </h4>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Track 1 -->
-                        <div class="border-2 border-blue-200 bg-blue-50/30 rounded-xl p-5 hover:bg-blue-50 transition-colors">
-                            <div class="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-bold mb-4 shadow-sm">
-                                <i data-lucide="briefcase" class="w-4 h-4"></i> ① 업무 증강 (Work Augmentation)
-                            </div>
-                            <ul class="space-y-3 text-sm text-gray-700">
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="chevron-right" class="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
-                                    <span>사내 AI <strong>('하이')</strong> 및 <strong>MS Copilot</strong> 실무 적용</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="chevron-right" class="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
-                                    <span>오프라인 코딩을 통한 단순 반복 업무 자동화 구현</span>
-                                </li>
-                                <li class="flex items-start gap-2 mt-4">
-                                    <div class="w-full bg-white p-3 rounded border border-blue-100 text-center text-xs font-semibold text-blue-800">
-                                        회사 업무 프로세스와 직접 연계된 효율성 극대화
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
 
-                        <!-- Track 2 -->
-                        <div class="border-2 border-emerald-200 bg-emerald-50/30 rounded-xl p-5 hover:bg-emerald-50 transition-colors">
-                            <div class="inline-flex items-center gap-2 bg-emerald-600 text-white px-3 py-1.5 rounded-md text-sm font-bold mb-4 shadow-sm">
-                                <i data-lucide="coffee" class="w-4 h-4"></i> ② 일상 증강 (Life Augmentation)
-                            </div>
-                            <ul class="space-y-3 text-sm text-gray-700">
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="chevron-right" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
-                                    <span>Playday 활동을 통한 <strong>GPT, 제미나이, 클로드</strong> 등 범용 AI 체험기회 제공</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i data-lucide="chevron-right" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
-                                    <span>개인 어학 학습, 여행/취미 계획 수립, 관심사 탐색 등 순수 개인 역량 강화</span>
-                                </li>
-                                <li class="flex items-start gap-2 mt-4">
-                                    <div class="w-full bg-white p-3 rounded border border-emerald-100 text-center text-xs font-semibold text-emerald-800">
-                                        개인의 디지털 리터러시 및 일상 편의성 증대
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
+        <!-- Bottom Badge -->
+<div class="flex justify-center mt-12 pb-16">
+<div class="bg-white px-8 py-4 rounded-full card-shadow badge-border flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                🚀 <span class="mx-1">ACE 활동을 진심으로 축하드립니다.</span> 🚀
+</div>
+</div>
+</div>
 
-    <!-- Modal 3: 로드맵 -->
-    <div id="modal3" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('modal3')"></div>
-        <div class="modal-content relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="bg-navy px-6 py-4 flex items-center justify-between text-white">
-                <h3 class="text-xl font-bold flex items-center gap-2"><i data-lucide="calendar-days" class="w-5 h-5"></i> 2026 연간 추진 로드맵</h3>
-                <button onclick="closeModal('modal3')" class="text-blue-200 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto">
-                
-                <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <i data-lucide="rocket" class="w-5 h-5 text-navy"></i> Copilot 빌드업 및 확산 일정
-                </h4>
 
-                <!-- Vertical Timeline -->
-                <div class="relative border-l-2 border-blue-200 ml-4 md:ml-6 mt-4 space-y-8 pb-4">
-                    
-                    <!-- Phase 1 -->
-                    <div class="relative pl-8">
-                        <span class="absolute flex items-center justify-center w-8 h-8 bg-white border-4 border-navy rounded-full -left-[17px] top-0 shadow-sm">
-                            <span class="text-xs font-bold text-navy">1</span>
-                        </span>
-                        <div class="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-navy transition-colors shadow-sm">
-                            <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span class="px-2 py-1 bg-navy text-white rounded text-xs font-bold tracking-wide">Phase 1</span>
-                                <h3 class="font-bold text-lg text-gray-800">기반 조성</h3>
-                                <span class="text-sm font-medium text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full ml-auto">2~3월</span>
-                            </div>
-                            <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 mt-3 marker:text-navy">
-                                <li>전사 ACE 선발 (30명)</li>
-                                <li>부트캠프 교육 진행</li>
-                                <li>PlayGround 플랫폼 오픈</li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <!-- Phase 2 -->
-                    <div class="relative pl-8">
-                        <span class="absolute flex items-center justify-center w-8 h-8 bg-white border-4 border-blue-500 rounded-full -left-[17px] top-0 shadow-sm">
-                            <span class="text-xs font-bold text-blue-600">2</span>
-                        </span>
-                        <div class="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-blue-500 transition-colors shadow-sm">
-                            <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span class="px-2 py-1 bg-blue-500 text-white rounded text-xs font-bold tracking-wide">Phase 2</span>
-                                <h3 class="font-bold text-lg text-gray-800">Use-Case 누적 및 활성화</h3>
-                                <span class="text-sm font-medium text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full ml-auto">4~6월</span>
-                            </div>
-                            <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 mt-3 marker:text-blue-500">
-                                <li>ACE 주도 현업 과제 수행 및 Use-case 누적</li>
-                                <li>Play Day 이벤트 개최</li>
-                                <li><strong class="text-blue-900">AI 링커 365명 추가 선정</strong> 및 링커를 통한 단위조직별 Needs 파악</li>
-                            </ul>
-                        </div>
-                    </div>
+    <script>
+        const roadmapData = [
+            {
+                id:1,
+                title:"선발 공모",
+                month:"2월",
+                description:"신규 ACE 멤버를 모집하고\n심사를 통해 최종 인원을 선발합니다.",
+                details:["신규 ACE 멤버 모집 및 심사","최종 선발 인원 발표"],
+                icon:"users"
+            },
+            {
+                id:2,
+                title:"부트캠프",
+                month:"3월",
+                description:"기초 역량 강화를 위한\n전문 외부 교육을 진행합니다.",
+                details:["오리엔테이션","AI링커 선발 및 링커 웨비나 진행","각 본부 단위조직별 AI Needs 파악","전문 교육(온/오프라인 강의)"],
+                icon:"graduation-cap"
+            },
+            {
+                id:3,
+                title:"월별 활동 (상반기)",
+                month:"4월 ~ 6월",
+                description:"월별 ACE 과제를 수행하며\nAI USE CASE를 전파하고 전사 AI 활용 문화를 활성화시킵니다.",
+                details:["월별 AI USE CASE 발굴/공유","명사 특강(4월 예정)","도와줘요 ACE를 통한 현장 AI 활성화 지원"],
+                icon:"calendar-check"
+            },
+            {
+                id:4,
+                title:"중간 점검 피드백 반영",
+                month:"7월",
+                description:"상반기 성과를 리뷰하고\n하반기 목표 설정 및 피드백을 반영합니다.",
+                details:["상반기 성과 리뷰","하반기 목표 설정 및 피드백"],
+                icon:"search-check"
+            },
+            {
+                id:5,
+                title:"월별 활동 (하반기)",
+                month:"8월 ~ 10월",
+                description:"월별 ACE 과제를 진행하고 성과 확산을 위한\n사내 세미나를 개최합니다.",
+                details:["월별 AI USE CASE 발굴/공유","도와줘요 ACE를 통한 현장 AI 활성화 지원","성과 확산을 위한 세미나 개최"],
+                icon:"rocket"
+            },
+            {
+                id:6,
+                title:"활동 결산",
+                month:"11월 ~ 12월",
+                description:"최종 활동 보고회를 통해\n우수 활동자에게는 포상이 제공됩니다.",
+                details:["최종 활동 보고회","우수 활동자 포상 및 피드백"],
+                icon:"award"
+            }
+        ];
 
-                    <!-- Phase 3 -->
-                    <div class="relative pl-8">
-                        <span class="absolute flex items-center justify-center w-8 h-8 bg-white border-4 border-indigo-500 rounded-full -left-[17px] top-0 shadow-sm">
-                            <span class="text-xs font-bold text-indigo-600">3</span>
-                        </span>
-                        <div class="bg-indigo-50/50 rounded-lg p-5 border border-indigo-200 hover:border-indigo-500 transition-colors shadow-sm">
-                            <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span class="px-2 py-1 bg-indigo-500 text-white rounded text-xs font-bold tracking-wide">Phase 3</span>
-                                <h3 class="font-bold text-lg text-gray-800">네트워크 가동 & 인프라 지원</h3>
-                                <span class="text-sm font-medium text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full ml-auto">7월</span>
-                            </div>
-                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 mt-3 marker:text-indigo-500">
-                                <li><strong class="text-indigo-900">AI 링커 활동 본격 시작</strong></li>
-                                <li>M365 Copilot 유료 서비스 일괄 오픈 (ACE, AI 링커)</li>
-                                <li>웨비나를 통한 네트워크 확산 활동 가이드 제공</li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <!-- Phase 4 -->
-                    <div class="relative pl-8">
-                        <span class="absolute flex items-center justify-center w-8 h-8 bg-white border-4 border-emerald-500 rounded-full -left-[17px] top-0 shadow-sm">
-                            <span class="text-xs font-bold text-emerald-600">4</span>
-                        </span>
-                        <div class="bg-emerald-50/50 rounded-lg p-5 border border-emerald-200 hover:border-emerald-500 transition-colors shadow-sm">
-                            <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span class="px-2 py-1 bg-emerald-500 text-white rounded text-xs font-bold tracking-wide">Phase 4</span>
-                                <h3 class="font-bold text-lg text-gray-800">현장 안착 및 맞춤형 빌드업</h3>
-                                <span class="text-sm font-medium text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full ml-auto">8~12월</span>
-                            </div>
-                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 mt-3 marker:text-emerald-500">
-                                <li>부서 단위 라이브 시연 연쇄 전파</li>
-                                <li><strong class="text-emerald-900">맞춤형 App/Agent 자체 제작 및 빌드업</strong></li>
-                                <li>연말 우수 사례 포상</li>
-                            </ul>
-                        </div>
-                    </div>
 
-                </div>
+        let activeId = 1;
 
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Lucide 아이콘 렌더링
-        lucide.createIcons();
 
-        // 모달 제어 함수
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-            // 모달 열릴 때 body 스크롤 방지
-            document.body.style.overflow = 'hidden';
-        }
+        function render() {
+            const desktopTimeline = document.getElementById('desktop-timeline');
+            desktopTimeline.innerHTML = roadmapData.map(step => {
+                const isActive = activeId === step.id;
+                return `
+<div class="flex flex-col items-center group cursor-pointer relative" style="width:16%" onclick="setActive(${step.id})">
+<div class="w-14 h-14 mb-5 rounded-full flex items-center justify-center transition-all duration-300 z-10
+                        ${isActive
+                            ? 'bg-primary ring-4 ring-white shadow-[0_0_0_8px_rgba(0,156,228,0.2)] text-white scale-110'
+                            : 'bg-white border-[3px] border-slate-200 text-slate-400 hover:border-primary hover:text-primary'}">
+<i data-lucide="${step.icon}" class="w-6 h-6"></i>
+</div>
+<div class="text-center transition-all duration-300 ${isActive ? 'transform -translate-y-1' : ''}">
+<div class="text-sm font-bold mb-1.5 ${isActive ? 'text-primary' : 'text-slate-400'}">${step.month}</div>
+<h3 class="font-bold text-[15px] ${isActive ? 'text-slate-900' : 'text-slate-500'}">${step.title}</h3>
+</div>
+</div>`;
+            }).join('');
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            // 모달 닫힐 때 body 스크롤 복구
-            document.body.style.overflow = 'auto';
-        }
 
-        // ESC 키로 모달 닫기 지원
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                const activeModals = document.querySelectorAll('.modal.active');
-                activeModals.forEach(modal => {
-                    modal.classList.remove('active');
-                });
-                document.body.style.overflow = 'auto';
-            }
-        });
-    </script>
+
+            const mobileTimeline = document.getElementById('mobile-timeline');
+            mobileTimeline.innerHTML = roadmapData.map(step => {
+                const isActive = activeId === step.id;
+                return `
+<div onclick="setActive(${step.id})" class="cursor-pointer bg-white rounded-2xl p-6 transition-all duration-300
+                    ${isActive ? 'border-2 border-primary shadow-md' : 'border border-slate-100 shadow-sm'}">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center text-white ${isActive ? 'bg-primary' : 'bg-slate-300'}">
+<i data-lucide="${step.icon}" class="w-6 h-6"></i>
+</div>
+<div>
+<span class="text-[11px] font-bold text-primary tracking-wider uppercase">STEP 0${step.id}</span>
+<h3 class="text-lg font-bold text-slate-800 leading-tight">${step.title} <span class="text-sm font-normal text-slate-400 ml-1">(${step.month})</span></h3>
+</div>
+</div>
+<p class="text-slate-500 text-sm mb-4 whitespace-pre-line leading-relaxed">${step.description}</p>
+<div class="space-y-2">
+                        ${step.details.map(d => `
+<div class="flex items-center gap-2 text-[13px] text-slate-600 bg-slate-50 px-3 py-2.5 rounded-lg">
+<i data-lucide="check-circle-2" class="w-4 h-4 text-primary"></i>
+                                ${d}
+</div>`).join('')}
+</div>
+</div>`;
+            }).join('');
+
+
+
+            const detailSection = document.getElementById('detail-section');
+            if (activeId) {
+                const step = roadmapData.find(s => s.id === activeId);
+                detailSection.innerHTML = `
+<div class="bg-white rounded-[28px] p-12 card-shadow border border-white mx-auto max-w-4xl transform transition-all duration-500 opacity-100 translate-y-0">
+<div class="flex items-start gap-8">
+<div class="shrink-0 w-20 h-20 rounded-[1.25rem] flex items-center justify-center bg-primary text-white shadow-sm">
+<i data-lucide="${step.icon}" class="w-10 h-10"></i>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-sm font-extrabold text-primary tracking-widest uppercase">STEP 0${step.id} • ${step.month}</span>
+</div>
+<h2 class="text-[1.75rem] font-bold text-slate-900 mb-4">${step.title}</h2>
+<p class="text-slate-500 text-[17px] leading-relaxed mb-8 whitespace-pre-line">${step.description}</p>
+<div class="flex flex-col gap-3">
+                                ${step.details.map(d => `
+<div class="flex items-center gap-3 text-[15px] text-slate-600">
+<div class="w-6 h-6 rounded-full bg-primaryLight flex items-center justify-center shrink-0">
+<i data-lucide="check" class="w-4 h-4 text-primary stroke-[3]"></i>
+</div>
+<span class="font-medium">${d}</span>
+</div>`).join('')}
+</div>
+</div>
+</div>
+</div>`;
+            }
+
+
+
+            lucide.createIcons();
+        }
+
+
+
+        function setActive(id) {
+            activeId = id;
+            render();
+        }
+
+
+
+        window.onload = render;
+</script>
 </body>
 </html>
